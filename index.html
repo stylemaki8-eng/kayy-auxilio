@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-br">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAKASSI FF</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <style>
+        :root {
+            --rosa: #ff007f;
+            --fundo: #000;
+        }
+
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--fundo); display: flex; justify-content: center; align-items: center; overflow: hidden; color: #fff; }
+        #particles-js { position: absolute; width: 100%; height: 100%; z-index: 1; }
+
+        /* PAINEL GRANDE */
+        .painel-vip {
+            position: relative; z-index: 10;
+            width: 400px; 
+            background: rgba(10, 10, 10, 0.98);
+            border: 2px solid var(--rosa);
+            border-radius: 30px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 0, 127, 0.5);
+        }
+
+        h2 { font-size: 28px; margin-bottom: 25px; text-shadow: 0 0 15px var(--rosa); letter-spacing: 2px; }
+
+        /* TELA LOGIN */
+        .input-box { width: 100%; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255, 0, 127, 0.4); border-radius: 12px; color: #fff; text-align: center; margin-bottom: 25px; outline: none; }
+        .btn-rosa { width: 100%; padding: 18px; background: var(--rosa); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; text-transform: uppercase; }
+
+        /* ABAS */
+        .abas { display: flex; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 15px; margin-bottom: 25px; }
+        .tab-btn { flex: 1; padding: 12px; background: transparent; border: none; color: #888; border-radius: 10px; cursor: pointer; font-size: 14px; }
+        .tab-btn.active { background: var(--rosa); color: #fff; }
+
+        /* CONTEÚDO */
+        .sessao { display: none; text-align: left; animation: fadeIn 0.3s ease; }
+        .sessao.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #ddd; font-size: 15px; }
+
+        /* SLIDERS */
+        .slider-wrap { margin-bottom: 20px; }
+        .slider-header { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
+        input[type=range] { width: 100%; accent-color: var(--rosa); cursor: pointer; }
+
+        /* SELECT */
+        select { width: 100%; background: #111; border: 1px solid rgba(255,0,127,0.4); color: #fff; padding: 12px; border-radius: 10px; outline: none; }
+
+        /* SWITCHES */
+        .switch { position: relative; width: 46px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider-switch { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; border-radius: 20px; transition: .4s; }
+        input:checked + .slider-switch { background: var(--rosa); }
+        .slider-switch:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .4s; }
+        input:checked + .slider-switch:before { transform: translateX(24px); }
+
+        /* BOLA INJETAR */
+        .bola-wrap { display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .bola { width: 90px; height: 90px; background: #fff; border-radius: 50%; cursor: pointer; transition: 0.5s; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+        .bola.ligada { background: #00ff88; box-shadow: 0 0 40px #00ff88; }
+
+        #fov-area { display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .hidden { display: none; }
+    </style>
+ </head>
+ <body>
+  <div id="particles-js"></div>
+  <div class="painel-vip">
+   <h2>TAKASSI FF</h2>
+   <div id="login">
+    <input type="text" id="key-input" class="input-box" placeholder="DIGITE SUA KEY STYLE">
+    <button class="btn-rosa" onclick="logar()">ENTRAR NO PAINEL</button>
+   </div>
+   <div id="painel" class="hidden">
+    <div class="abas">
+     <button class="tab-btn active" id="b-aim" onclick="tab('aim')">Aimbot</button>
+     <button class="tab-btn" id="b-opt" onclick="tab('opt')">Otimização</button>
+     <button class="tab-btn" id="b-inj" onclick="tab('inj')">Injetar</button>
+    </div>
+    <div id="aim" class="sessao active">
+     <div class="slider-wrap">
+      <div class="slider-header">
+       <span>Nível da precisão</span><span id="v1" style="color:var(--rosa)">100</span>
+      </div>
+      <input type="range" min="0" max="200" value="100" oninput="v1.innerText=this.value">
+     </div>
+     <div class="item">
+      <span>Priorizar cabeça</span><label class="switch"><input type="checkbox" id="master-aim" onchange="toggleFov()"><span class="slider-switch"></span></label>
+     </div>
+     <div class="item">
+      <span>Melhorar precisão</span><label class="switch"><input type="checkbox"><span class="slider-switch"></span></label>
+     </div>
+     <div class="item">
+      <span>Estabilizar na cabeça</span><label class="switch"><input type="checkbox"><span class="slider-switch"></span></label>
+     </div>
+     <div class="item">
+      <span>Aimbot legit</span><label class="switch"><input type="checkbox"><span class="slider-switch"></span></label>
+     </div>
+     <div id="fov-area">
+      <div class="slider-wrap">
+       <div class="slider-header">
+        <span>Fov:</span><span id="v2" style="color:var(--rosa)">150°</span>
+       </div>
+       <input type="range" min="0" max="360" value="150" oninput="v2.innerText=this.value+'°'">
+      </div>
+      <select><option>cabeça</option><option>queixo</option><option>pescoço</option></select>
+     </div>
+    </div>
+    <div id="opt" class="sessao">
+     <div class="item">
+      <span>Otimização</span><label class="switch"><input type="checkbox"><span class="slider-switch"></span></label>
+     </div>
+     <div class="item">
+      <span>120 fps</span><label class="switch"><input type="checkbox"><span class="slider-switch"></span></label>
+     </div>
+     <div class="item">
+      <span>remover lag</span><label class="switch"><input type="checkbox"><span class="slider-switch"></span></label>
+     </div>
+     <div class="item">
+      <span>controlar tremedeira</span><label class="switch"><input type="checkbox"><span class="slider-switch"></span></label>
+     </div>
+     <div class="item">
+      <span>tirar delay do toque</span><label class="switch"><input type="checkbox"><span class="slider-switch"></span></label>
+     </div>
+    </div>
+    <div id="inj" class="sessao">
+     <div class="bola-wrap">
+      <span style="font-size: 13px; margin-bottom: 25px; color: #888;">injetar</span>
+      <div class="bola" onclick="injetar()"></div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    particlesJS("particles-js", {
+        "particles": {
+            "number": { "value": 160 },
+            "color": { "value": "#ff007f" },
+            "size": { "value": 2 },
+            "line_linked": { "enable": true, "distance": 130, "color": "#ff007f", "opacity": 0.4 },
+            "move": { "enable": true, "speed": 15 }
+        }
+    });
+
+    function logar() {
+        const keyCorreta = "Taka-1029-82266";
+        const inputKey = document.getElementById('key-input').value;
+
+        if (inputKey === keyCorreta) {
+            document.getElementById('login').classList.add('hidden');
+            document.getElementById('painel').classList.remove('hidden');
+        } else {
+            alert("KEY INVÁLIDA! Verifique e tente novamente.");
+        }
+    }
+
+    function tab(id) {
+        document.querySelectorAll('.sessao').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.getElementById('b-' + id.substring(0,3)).classList.add('active');
+    }
+
+    function toggleFov() {
+        let master = document.getElementById('master-aim').checked;
+        document.getElementById('fov-area').style.display = master ? 'block' : 'none';
+    }
+
+    function injetar() {
+        event.target.classList.toggle('ligada');
+        setTimeout(() => { window.location.href = "freefire://"; }, 600);
+    }
+</script>
+ </body>
+</html>
