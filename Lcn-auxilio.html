@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LCN AUXILIO - Hack Style (Visual)</title>
+<style>
+    /* AZUL NEON PRINCIPAL */
+    :root {
+        --neon-color: #00BFFF; /* Azul Elétrico/Ciano */
+        --neon-shadow: 0 0 12px var(--neon-color), 0 0 24px #4DFFFF;
+        --neon-light: rgba(0, 191, 255, 0.8);
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        font-family: 'Courier New', monospace;
+        /* COR PRINCIPAL MUDADA PARA AZUL NEON */
+        color: var(--neon-color); 
+        /* FUNDO PERMANECE PRETO */
+        background: #000;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    /* Snow/Matrix canvas full-screen */
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -2;
+    }
+
+    /* subtle noise overlay for hacker feel */
+    .noise {
+        pointer-events: none;
+        position: fixed;
+        inset: 0;
+        /* Efeito de ruído em tons de AZUL */
+        background-image: linear-gradient(rgba(0,191,255,0.08) 1px, transparent 1px);
+        background-size: 100% 2px;
+        z-index: -1;
+        mix-blend-mode: overlay;
+    }
+
+    .login-container, .panel {
+        /* FUNDO DO PAINEL PRETO/CINZA ESCURO */
+        background: linear-gradient(180deg, rgba(10,10,10,0.9), rgba(20,20,20,0.8));
+        padding: 20px;
+        border-radius: 14px;
+        width: 90%;
+        max-width: 420px;
+        margin: 40px auto;
+        /* SOMBRA DO PAINEL AZUL */
+        box-shadow: 0 0 30px rgba(0,191,255,0.2), 0 10px 40px rgba(0,0,0,0.8);
+        border: 1px solid rgba(0,191,255,0.15);
+        position: relative;
+        color: var(--neon-color);
+    }
+
+    /* Neon border animation (AGORA AZUL) */
+    .panel::after {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 16px;
+        pointer-events: none;
+        background: linear-gradient(90deg, var(--neon-light), rgba(0,191,255,0.08), var(--neon-light));
+        filter: blur(8px);
+        z-index: 0;
+        animation: neon 3s linear infinite;
+    }
+
+    @keyframes neon {
+        0% { transform: translateX(-5%); opacity: 0.9; }
+        50% { transform: translateX(5%); opacity: 1; }
+        100% { transform: translateX(-5%); opacity: 0.9; }
+    }
+
+    input {
+        display: block;
+        margin: 10px auto;
+        padding: 12px;
+        width: 82%;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        /* INPUT AZUL CLARO TRANSPARENTE */
+        background: rgba(0,191,255,0.1);
+        color: var(--neon-color);
+        outline: 1:1.5px solid rgba(0,191,255,0.3);
+    }
+    
+    /* Placeholder com cor do neon */
+    input::placeholder {
+        color: rgba(0,191,255,0.6);
+    }
+
+    button {
+        padding: 12px 25px;
+        font-size: 18px;
+        border: none;
+        border-radius: 12px;
+        /* COR DO BOTÃO ALTERADA PARA AZUL ESCURO */
+        background: #008CBA; 
+        color: #FFFFFF;
+        cursor: pointer;
+        transition: 0.2s;
+        font-weight: bold;
+        box-shadow: 0 0 10px rgba(0,191,255,0.5);
+    }
+
+    button:hover {
+        /* HOVER AZUL MAIS CLARO */
+        background: var(--neon-color);
+        transform: scale(1.03);
+    }
+
+    .panel {
+        display: none;
+        padding: 20px;
+        border-radius: 14px;
+        /* SOMBRA MAIS INTENSA NO PAINEL AZUL */
+        box-shadow: 0 0 30px rgba(0,191,255,0.6); 
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+    }
+
+    h1, h2 {
+        font-size: 26px;
+        /* TÍTULO AZUL COM BRILHO */
+        color: var(--neon-color);
+        text-shadow: var(--neon-shadow);
+        margin-bottom: 18px;
+        letter-spacing: 1px;
+    }
+
+    /* glitch effect for title (AGORA AZUL) */
+    .glitch {
+        position: relative;
+        display: inline-block;
+    }
+    .glitch::before, .glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0.8;
+        clip: rect(0, 900px, 0, 0);
+    }
+    .glitch::before { color: rgba(0,191,255,0.9); transform: translate(2px,-1px); animation: glitchTop 2.5s infinite linear; }
+    .glitch::after { color: rgba(0,150,200,0.8); transform: translate(-2px,1px); animation: glitchBottom 2.7s infinite linear; }
+    @keyframes glitchTop {
+        0%{clip:rect(0,900px,0,0);} 
+        10%{clip:rect(10px,900px,40px,0);} 
+        20%{clip:rect(5px,900px,20px,0);} 
+        30%{clip:rect(20px,900px,60px,0);} 
+        40%{clip:rect(0,900px,0,0);} 
+        100%{clip:rect(0,900px,0,0);} 
+    }
+    @keyframes glitchBottom {
+        0%{clip:rect(0,900px,0,0);} 
+        15%{clip:rect(30px,900px,80px,0);} 
+        25%{clip:rect(10px,900px,30px,0);} 
+        35%{clip:rect(40px,900px,90px,0);} 
+        100%{clip:rect(0,900px,0,0);} 
+    }
+
+    .section {
+        margin: 18px 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .section-title {
+        font-size: 20px;
+        margin-bottom: 12px;
+        font-weight: bold;
+        /* TÍTULO DA SEÇÃO BRILHANDO EM AZUL */
+        text-shadow: 0 0 8px var(--neon-color);
+    }
+
+    .option {
+        padding: 12px;
+        margin: 8px auto;
+        width: 82%;
+        /* FUNDO DE OPÇÃO SEMI-TRANSPARENTE */
+        background: rgba(0,191,255,0.06);
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 17px;
+        transition: 0.2s;
+        color: var(--neon-color);
+        border: 1px solid rgba(0,191,255,0.2);
+    }
+
+    .option:hover {
+        background: rgba(0,191,255,0.12);
+        transform: translateY(-3px);
+    }
+
+    .option.active {
+        /* ESTADO ATIVO: AZUL SÓLIDO */
+        background: var(--neon-color);
+        color: black;
+        box-shadow: 0 0 12px var(--neon-color);
+        font-weight: bold;
+    }
+
+    .status {
+        margin-top: 18px;
+        font-size: 16px;
+        font-weight: bold;
+        /* STATUS BRILHANDO EM AZUL */
+        text-shadow: 0 0 6px var(--neon-color);
+    }
+
+    .footer {
+        margin-top: 28px;
+        font-size: 18px;
+        font-weight: bold;
+        /* RODAPÉ BRILHANDO EM AZUL */
+        text-shadow: 0 0 12px var(--neon-color);
+        padding-top: 60px;
+        opacity: 0.9;
+    }
+
+    .fov-slider {
+        width: 80%;
+        margin: 10px auto;
+    }
+
+    .sub-options {
+        display: none;
+        margin-top: 8px;
+    }
+
+    .sub-options .option {
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 15px;
+        padding: 10px;
+    }
+
+    .slider-container { text-align: center; }
+    .slider-value { font-weight: bold; margin-bottom: 6px; }
+    .slider-labels { width: 80%; margin: 6px auto 0; display: flex; justify-content: space-between; font-size: 12px; }
+
+    @media (max-width: 500px) {
+        input, .option { width: 92%; }
+        .slider-labels { width: 92%; }
+    }
+</style>
+</head>
+<body>
+
+<canvas id="snow-effect"></canvas>
+<div class="noise"></div>
+
+<div class="login-container" id="login-container">
+    <h2 class="glitch" data-text="LCN LOGIN">LCN LOGIN</h2>
+    <input type="text" id="username" placeholder="Usuário">
+    <input type="password" id="password" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
+    <p id="login-error" style="color:var(--neon-color);"></p>
+</div>
+
+<div class="panel" id="panel">
+    <h1><span class="glitch" data-text="LCN AUXILIO">LCN AUXILIO</span></h1>
+
+    <div class="section">
+        <div class="section-title">Sistema Avancado</div>
+        <div class="option" onclick="toggleOption(this, '120 FPS')">120 FPS</div>
+        <div class="option" onclick="toggleOption(this, 'Otimizacao')">Otimizacao</div>
+        <div class="option" onclick="toggleOption(this, 'No Recoil')">No Recoil</div> 
+    </div>
+
+    <div class="section">
+        <div class="section-title">Ajustes de Mira</div>
+        <div class="option" onclick="toggleFov()">Estabilizar Mira</div>
+        <div class="slider-container" id="sliderContainer" style="display:none;">
+            <div class="slider-value">Valor: <span id="sliderValue">5</span></div>
+            <input type="range" min="0" max="10" value="5" class="fov-slider" id="fovSlider">
+            <div class="slider-labels" id="sliderLabels">
+                </div>
+        </div>
+        
+        <div class="option" onclick="toggleSubOptions()">Regular Mira</div>
+        <div class="sub-options" id="subOptions">
+            <div class="option" onclick="toggleOption(this,'Cabeca')">Cabeça</div>
+            <div class="option" onclick="toggleOption(this,'Pescoco')">Pescoço</div>
+            <div class="option" onclick="toggleOption(this,'Peito')">Peito</div>
+        </div>
+    </div>
+    
+    <div class="status" id="status">Nenhuma funcao ativada</div>
+
+    <div class="footer">
+        AUXILIO DE MIRA LCN
+        <div class="section" style="padding-top: 20px;">
+            <button onclick="abrirFreeFire()">Abrir Free Fire</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // CREDENCIAIS ALTERADAS
+    const correctUser = "lcn";
+    const correctPass = "2007";
+    let activeOptions = [];
+
+    function login() {
+        const user = document.getElementById('username').value.toLowerCase().trim();
+        const pass = document.getElementById('password').value.toLowerCase().trim();
+        const err = document.getElementById('login-error');
+
+        if (user === correctUser && pass === correctPass) {
+            err.innerText = "";
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('panel').style.display = 'block';
+            requestFullscreen();
+        } else {
+            err.innerText = "Usuario ou senha incorretos!";
+        }
+    }
+
+    function toggleOption(element, optionName) {
+        element.classList.toggle("active");
+        if (activeOptions.includes(optionName)) {
+            activeOptions = activeOptions.filter(opt => opt !== optionName);
+        } else {
+            activeOptions.push(optionName);
+        }
+        updateStatus();
+
+        // neon pulse effect (AGORA PULSO AZUL)
+        const panel = document.getElementById('panel');
+        panel.style.boxShadow = "0 0 60px rgba(0,191,255,0.9)";
+        setTimeout(() => {
+            panel.style.boxShadow = "0 0 30px rgba(0,191,255,0.6)";
+        }, 220);
+    }
+
+    function toggleFov() {
+        const container = document.getElementById('sliderContainer');
+        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleSubOptions() {
+        const sub = document.getElementById('subOptions');
+        sub.style.display = sub.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function updateStatus() {
+        const status = document.getElementById('status');
+        status.innerText = activeOptions.length === 0 ? "Nenhuma funcao ativada" : "Funcoes ativas: " + activeOptions.join(", ");
+    }
+
+    function abrirFreeFire() {
+        window.location.href = "freefire://";
+        alert("Tentando abrir Free Fire...");
+    }
+
+    // Efeito de "Neve" (bolinhas caindo)
+    const canvas = document.getElementById('snow-effect'); 
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    let max_particles = 100;
+    let particles = [];
+
+    function resizeCanvas() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function Particle() {
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
+        this.r = Math.random() * 2 + 1; // Raio entre 1 e 3
+        this.d = Math.random() * max_particles; // Densidade
+        this.velocity = Math.random() * 1.5; // Velocidade de queda
+    }
+
+    for (var i = 0; i < max_particles; i++) {
+        particles.push(new Particle());
+    }
+
+    function drawSnow() {
+        ctx.clearRect(0, 0, W, H);
+        // Cor do efeito de neve alterada para AZUL
+        ctx.fillStyle = "rgba(0, 191, 255, 0.8)"; 
+        ctx.beginPath();
+
+        for (var i = 0; i < max_particles; i++) {
+            var p = particles[i];
+            ctx.moveTo(p.x, p.y);
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+        }
+        ctx.fill();
+        updateSnow();
+        requestAnimationFrame(drawSnow);
+    }
+
+    let angle = 0;
+    function updateSnow() {
+        angle += 0.01;
+        for (var i = 0; i < max_particles; i++) {
+            var p = particles[i];
+            
+            // Simula a queda (velocidade)
+            p.y += Math.cos(angle + p.d) + p.velocity;
+            // Simula o movimento lateral (vento/oscilação)
+            p.x += Math.sin(angle) * 0.5;
+
+            // Se a partícula sair da tela, reposiciona-a no topo
+            if (p.x > W || p.x < 0 || p.y > H) {
+                if (i % 3 > 0) { // Cerca de 2/3 das partículas voltam para o topo
+                    particles[i] = new Particle();
+                    particles[i].y = -10;
+                } else { // 1/3 das partículas voltam para um local aleatório no topo
+                    particles[i] = new Particle();
+                    particles[i].y = -10;
+                    particles[i].x = Math.random() * W;
+                }
+            }
+        }
+    }
+    drawSnow();
+
+    function requestFullscreen() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) elem.requestFullscreen();
+        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+        else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) requestFullscreen();
+    });
+
+    // --- Slider numbers (0..10) and display logic ---
+    const slider = document.getElementById('fovSlider');
+    const sliderValue = document.getElementById('sliderValue');
+    const sliderLabels = document.getElementById('sliderLabels');
+
+    function createSliderLabels() {
+        sliderLabels.innerHTML = '';
+        for (let i = 0; i <= 10; i++) {
+            const span = document.createElement('span');
+            span.textContent = i;
+            sliderLabels.appendChild(span);
+        }
+    }
+
+    if (slider) {
+        createSliderLabels();
+        slider.addEventListener('input', (e) => {
+            sliderValue.textContent = e.target.value;
+        });
+    }
+
+</script>
+
+</body>
+</html>
